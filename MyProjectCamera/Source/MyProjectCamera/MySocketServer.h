@@ -16,20 +16,22 @@ public:
 
 protected:
     virtual void BeginPlay() override;
-    virtual void Tick(float DeltaTime) override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+    virtual void Tick(float DeltaTime) override;
+    virtual void BeginDestroy() override;
 
-   // void ConnectToPythonServer(const FString& IP, int32 Port);
-   // void ReceiveAndHandleCommand();
-    void StartListening(int32 Port);
-    void AcceptClients();
-    FString HandleCommand(const FString& Command);
-    void SendResponseToPython(const FString& Message);
-    FString GetAllActorNames();
+    // ✅ 누락된 함수 선언 추가
+    bool StartTCPListener(const FString& SocketName, const FString& IP, const int32 Port);
+    void ProcessMessage(const FString& Message);
+    void ShutdownSocket();
 
-private:
-    FSocket* ListenSocket = nullptr;
-    FSocket* ClientSocket = nullptr;
-    FTimerHandle ListenTimerHandle;
-    TSharedPtr<FInternetAddr> PythonAddress;
+    // ✅ 누락된 변수 선언 추가
+    FSocket* ListenerSocket;
+    FSocket* ConnectionSocket;
+    TSharedPtr<FInternetAddr> RemoteAddress;
+    ISocketSubsystem* SocketSubsystem = nullptr;
+
+    UPROPERTY(EditAnywhere, Category = "Socket")
+    int32 Port = 7777;
+
 };
